@@ -1,10 +1,22 @@
 # Match Proof
 
-[Live GitHub Pages site](https://baditaflorin.github.io/match-proof/) · [Repository](https://github.com/baditaflorin/match-proof) · [Support via PayPal](https://www.paypal.com/paypalme/florinbadita)
+Live GitHub Pages site:
+
+https://baditaflorin.github.io/match-proof/
+
+Repository:
+
+https://github.com/baditaflorin/match-proof
+
+Support:
+
+https://www.paypal.com/paypalme/florinbadita
 
 Privacy-preserving peer matching for shared attributes using browser crypto, WebRTC, Bloom filters, and local inference.
 
-Match Proof is a static GitHub Pages app. It keeps profiles on-device, connects peers directly, and surfaces only verified shared attributes.
+![Match Proof demo screenshot](docs/screenshot.png)
+
+Match Proof is a static GitHub Pages app. It keeps profiles on-device, connects peers directly, and surfaces only verified shared attributes. V1 uses a real browser BBS signature proof path for requested candidate matches, session-specific Bloom filters for set intersection, WebRTC data channels for peer exchange, and a local-only insight adapter.
 
 ## Quickstart
 
@@ -38,3 +50,12 @@ The project is Mode A: Pure GitHub Pages. There is no runtime backend, no server
 - Deploy guide: `docs/deploy.md`
 - Privacy: `docs/privacy.md`
 - Postmortem: `docs/postmortem.md`
+
+## Validation
+
+```sh
+make lint
+make test
+make smoke
+npm audit --audit-level=high
+```

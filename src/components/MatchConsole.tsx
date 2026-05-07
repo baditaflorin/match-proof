@@ -83,8 +83,6 @@ export function MatchConsole({ profile, onError }: MatchConsoleProps) {
       const peer = createPeer(sessionId)
       peerRef.current = peer
       const generatedAnswer = await peer.acceptOffer(decodedOffer)
-      const remoteSessionId = await inferSessionAfterOffer()
-      await prepareCurrentProfile(remoteSessionId)
       setAnswer(generatedAnswer)
     })
   }
@@ -125,7 +123,9 @@ export function MatchConsole({ profile, onError }: MatchConsoleProps) {
       if (message.type === 'hello') {
         setPeerHello(message)
         const prepared =
-          preparedRef.current ?? (await prepareCurrentProfile(message.sessionId || fallbackSessionId))
+          preparedRef.current?.hello.sessionId === message.sessionId
+            ? preparedRef.current
+            : await prepareCurrentProfile(message.sessionId || fallbackSessionId)
         const request = buildProofRequest(prepared, message)
         requestedRef.current = request.requestedDigests
         peerRef.current?.send(request)
@@ -171,10 +171,6 @@ export function MatchConsole({ profile, onError }: MatchConsoleProps) {
     } finally {
       setBusy(false)
     }
-  }
-
-  async function inferSessionAfterOffer() {
-    return sessionId
   }
 
   return (
