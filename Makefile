@@ -20,6 +20,7 @@ dev:
 	npm run dev
 
 build:
+	bash scripts/clean-pages.sh
 	npm run build
 	test -f docs/index.html
 	cp docs/index.html docs/404.html

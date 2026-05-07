@@ -1,86 +1,77 @@
-import { ExternalLink, GitFork, HeartHandshake, ShieldCheck, Sparkles } from 'lucide-react'
-declare const __APP_VERSION__: string
-declare const __APP_COMMIT__: string
+import { useEffect, useState } from 'react'
+import { AppHeader } from './components/AppHeader'
+import { MatchConsole } from './components/MatchConsole'
+import { ProfileEditor } from './components/ProfileEditor'
+import { loadActiveProfile, saveActiveProfile } from './features/profile/storage'
+import type { LocalProfile } from './features/profile/schema'
 
 function App() {
+  const [profile, setProfile] = useState<LocalProfile>()
+  const [toast, setToast] = useState<string>()
+
+  useEffect(() => {
+    let active = true
+    loadActiveProfile()
+      .then((loaded) => {
+        if (active) {
+          setProfile(loaded)
+        }
+      })
+      .catch((error) => setToast(error instanceof Error ? error.message : 'Could not load profile'))
+
+    return () => {
+      active = false
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!profile) {
+      return
+    }
+    const timeout = window.setTimeout(() => {
+      saveActiveProfile(profile).catch((error) =>
+        setToast(error instanceof Error ? error.message : 'Could not save profile'),
+      )
+    }, 350)
+    return () => window.clearTimeout(timeout)
+  }, [profile])
+
   return (
     <main className="min-h-screen bg-stone-50 text-slate-950">
-      <section className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-5 py-5 sm:px-8">
-        <nav className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-4">
-          <a className="flex items-center gap-2 font-semibold" href="/match-proof/">
-            <ShieldCheck className="size-5 text-teal-700" aria-hidden="true" />
-            Match Proof
-          </a>
-          <div className="flex flex-wrap items-center gap-2 text-sm">
-            <a
-              className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-3 py-2 font-medium shadow-sm transition hover:border-slate-500"
-              href="https://github.com/baditaflorin/match-proof"
-              rel="noreferrer"
-              target="_blank"
-            >
-              <GitFork className="size-4" aria-hidden="true" />
-              Star on GitHub
-            </a>
-            <a
-              className="inline-flex items-center gap-2 rounded-md border border-amber-300 bg-amber-100 px-3 py-2 font-medium text-amber-950 shadow-sm transition hover:border-amber-500"
-              href="https://www.paypal.com/paypalme/florinbadita"
-              rel="noreferrer"
-              target="_blank"
-            >
-              <HeartHandshake className="size-4" aria-hidden="true" />
-              Support
-            </a>
-          </div>
-        </nav>
+      <AppHeader />
 
-        <div className="grid flex-1 items-center gap-8 py-10 lg:grid-cols-[1fr_0.85fr]">
-          <div>
-            <p className="mb-3 inline-flex items-center gap-2 rounded-md bg-teal-100 px-3 py-1 text-sm font-semibold text-teal-900">
-              <Sparkles className="size-4" aria-hidden="true" />
-              Browser-only proof-of-attribute matching
-            </p>
-            <h1 className="max-w-3xl text-5xl font-semibold leading-tight tracking-normal sm:text-6xl">
-              Meet people without leaking the rest of your life.
+      <section className="mx-auto grid max-w-7xl gap-5 px-4 py-6 sm:px-6 lg:grid-cols-[0.95fr_1.3fr]">
+        <div className="grid content-start gap-4">
+          <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+            <p className="text-sm font-semibold uppercase tracking-normal text-teal-800">Proof-of-attribute matching</p>
+            <h1 className="mt-2 text-4xl font-semibold leading-tight tracking-normal">
+              Find shared context without exposing the rest.
             </h1>
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-700">
-              Two conference attendees can exchange peer-to-peer proofs for shared interests,
-              credentials, and constraints. Only verified matches are surfaced.
+            <p className="mt-3 leading-7 text-slate-700">
+              Profiles stay local. WebRTC carries session-specific Bloom filters and selective proof packets. Only
+              verified overlap appears in the result list.
             </p>
-          </div>
+          </section>
 
-          <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="mb-4 flex items-center justify-between gap-3">
-              <h2 className="text-xl font-semibold">Build status</h2>
-              <span className="rounded-md bg-slate-100 px-2 py-1 font-mono text-xs text-slate-700">
-                v{__APP_VERSION__}
-              </span>
-            </div>
-            <dl className="grid gap-3 text-sm">
-              <div className="flex items-center justify-between gap-3 rounded-md bg-slate-50 px-3 py-2">
-                <dt className="font-medium text-slate-600">Commit</dt>
-                <dd className="font-mono">{__APP_COMMIT__}</dd>
-              </div>
-              <div className="flex items-center justify-between gap-3 rounded-md bg-slate-50 px-3 py-2">
-                <dt className="font-medium text-slate-600">Deployment</dt>
-                <dd>GitHub Pages</dd>
-              </div>
-              <div className="flex items-center justify-between gap-3 rounded-md bg-slate-50 px-3 py-2">
-                <dt className="font-medium text-slate-600">Runtime</dt>
-                <dd>No backend</dd>
-              </div>
-            </dl>
-            <a
-              className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-md bg-slate-950 px-4 py-3 font-semibold text-white transition hover:bg-slate-800"
-              href="https://github.com/baditaflorin/match-proof"
-              rel="noreferrer"
-              target="_blank"
-            >
-              Repository
-              <ExternalLink className="size-4" aria-hidden="true" />
-            </a>
+          {profile ? <ProfileEditor profile={profile} onChange={setProfile} /> : null}
+        </div>
+
+        {profile ? <MatchConsole profile={profile} onError={setToast} /> : null}
+      </section>
+
+      {toast ? (
+        <div
+          className="fixed bottom-4 left-1/2 z-50 w-[min(92vw,520px)] -translate-x-1/2 rounded-lg border border-red-200 bg-white p-4 text-sm shadow-lg"
+          role="status"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <p>{toast}</p>
+            <button className="font-semibold text-red-700" type="button" onClick={() => setToast(undefined)}>
+              Dismiss
+            </button>
           </div>
         </div>
-      </section>
+      ) : null}
     </main>
   )
 }
