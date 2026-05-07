@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+MSG_FILE="${1:?commit message file required}"
+FIRST_LINE="$(head -n 1 "${MSG_FILE}")"
+
+if [[ ! "${FIRST_LINE}" =~ ^(feat|fix|docs|chore|refactor|test|ops|data|security)(\([a-z0-9._-]+\))?!?:\ .+ ]]; then
+  echo "Commit message must use Conventional Commits, e.g. feat: add proof exchange"
+  exit 1
+fi

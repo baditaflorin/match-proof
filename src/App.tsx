@@ -43,13 +43,15 @@ function App() {
       <section className="mx-auto grid max-w-7xl gap-5 px-4 py-6 sm:px-6 lg:grid-cols-[0.95fr_1.3fr]">
         <div className="grid content-start gap-4">
           <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-            <p className="text-sm font-semibold uppercase tracking-normal text-teal-800">Proof-of-attribute matching</p>
+            <p className="text-sm font-semibold uppercase tracking-normal text-teal-800">
+              Proof-of-attribute matching
+            </p>
             <h1 className="mt-2 text-4xl font-semibold leading-tight tracking-normal">
               Find shared context without exposing the rest.
             </h1>
             <p className="mt-3 leading-7 text-slate-700">
-              Profiles stay local. WebRTC carries session-specific Bloom filters and selective proof packets. Only
-              verified overlap appears in the result list.
+              Profiles stay local. WebRTC carries session-specific Bloom filters and selective proof packets.
+              Only verified overlap appears in the result list.
             </p>
           </section>
 

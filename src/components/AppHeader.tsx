@@ -9,7 +9,11 @@ export function AppHeader() {
   return (
     <header className="border-b border-slate-200 bg-stone-50/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-6">
-        <a className="flex items-center gap-2 font-semibold" href="/match-proof/" aria-label="Match Proof home">
+        <a
+          className="flex items-center gap-2 font-semibold"
+          href="/match-proof/"
+          aria-label="Match Proof home"
+        >
           <ShieldCheck className="size-5 text-teal-700" aria-hidden="true" />
           <span>Match Proof</span>
         </a>

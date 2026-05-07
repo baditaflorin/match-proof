@@ -40,7 +40,9 @@ const api: CryptoWorkerApi = {
     const packets: BbsProofPacket[] = []
 
     for (const record of prepared.records.filter((candidate) => requested.has(candidate.digest))) {
-      const { secretKey, publicKey } = await bbs.generateKeyPair({ ciphersuite: CIPHERSUITE })
+      const { secretKey, publicKey } = await bbs.generateKeyPair({
+        ciphersuite: CIPHERSUITE,
+      })
       const header = utf8(`${EXCHANGE_VERSION}:header:${sessionId}`)
       const presentationHeader = utf8(`${EXCHANGE_VERSION}:presentation:${sessionId}:${record.digest}`)
       const messages = [
@@ -146,7 +148,11 @@ async function createConstraintProof(
 }
 
 async function verifyConstraintProof(proof: ConstraintProof, sessionId: string): Promise<boolean> {
-  const expected = await createConstraintProof(sessionId, proof.publicSignals.kind, proof.publicSignals.digest)
+  const expected = await createConstraintProof(
+    sessionId,
+    proof.publicSignals.kind,
+    proof.publicSignals.digest,
+  )
   return (
     proof.system === expected.system &&
     proof.verifier === expected.verifier &&

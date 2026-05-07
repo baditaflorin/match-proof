@@ -13,7 +13,6 @@ export function SignalBox({ label, value }: SignalBoxProps) {
   useEffect(() => {
     let active = true
     if (!value) {
-      setQr(undefined)
       return
     }
 
@@ -46,7 +45,11 @@ export function SignalBox({ label, value }: SignalBoxProps) {
             window.setTimeout(() => setCopied(false), 1200)
           }}
         >
-          {copied ? <Check className="size-4" aria-hidden="true" /> : <Copy className="size-4" aria-hidden="true" />}
+          {copied ? (
+            <Check className="size-4" aria-hidden="true" />
+          ) : (
+            <Copy className="size-4" aria-hidden="true" />
+          )}
           {copied ? 'Copied' : 'Copy'}
         </button>
       </div>

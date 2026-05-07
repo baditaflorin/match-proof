@@ -26,8 +26,9 @@ export async function summarizeMatches(profile: LocalProfile, matches: VerifiedM
 }
 
 function deterministicSummary(matches: VerifiedMatch[]): string {
-  const kinds = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' }).format([
-    ...new Set(matches.map((match) => match.kind)),
-  ])
+  const kinds = new Intl.ListFormat('en', {
+    style: 'long',
+    type: 'conjunction',
+  }).format([...new Set(matches.map((match) => match.kind))])
   return `${matches.length} verified match${matches.length === 1 ? '' : 'es'} across ${kinds}; hidden profile fields stayed local.`
 }

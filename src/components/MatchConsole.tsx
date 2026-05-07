@@ -52,7 +52,12 @@ export function MatchConsole({ profile, onError }: MatchConsoleProps) {
       const peer = await worker.prepareSession(bobProfile, demoSessionId)
       const request = buildProofRequest(local, peer.hello)
       const response = await worker.createProofResponse(bobProfile, demoSessionId, request.requestedDigests)
-      const result = await worker.verifyProofResponse(response, demoSessionId, request.requestedDigests, local.records)
+      const result = await worker.verifyProofResponse(
+        response,
+        demoSessionId,
+        request.requestedDigests,
+        local.records,
+      )
       preparedRef.current = local
       requestedRef.current = request.requestedDigests
       setPeerHello(peer.hello)
@@ -119,7 +124,8 @@ export function MatchConsole({ profile, onError }: MatchConsoleProps) {
     await runAction(async () => {
       if (message.type === 'hello') {
         setPeerHello(message)
-        const prepared = preparedRef.current ?? (await prepareCurrentProfile(message.sessionId || fallbackSessionId))
+        const prepared =
+          preparedRef.current ?? (await prepareCurrentProfile(message.sessionId || fallbackSessionId))
         const request = buildProofRequest(prepared, message)
         requestedRef.current = request.requestedDigests
         peerRef.current?.send(request)
@@ -127,7 +133,11 @@ export function MatchConsole({ profile, onError }: MatchConsoleProps) {
       }
 
       if (message.type === 'proof-request') {
-        const response = await worker.createProofResponse(profile, message.sessionId, message.requestedDigests)
+        const response = await worker.createProofResponse(
+          profile,
+          message.sessionId,
+          message.requestedDigests,
+        )
         peerRef.current?.send(response)
         return
       }
@@ -142,7 +152,12 @@ export function MatchConsole({ profile, onError }: MatchConsoleProps) {
       throw new Error('Prepare a local session before accepting proofs')
     }
     const requested = requestedRef.current
-    const result = await worker.verifyProofResponse(response, prepared.hello.sessionId, requested, prepared.records)
+    const result = await worker.verifyProofResponse(
+      response,
+      prepared.hello.sessionId,
+      requested,
+      prepared.records,
+    )
     setMatches(result.matches)
     setInsight(await summarizeMatches(profile, result.matches))
   }

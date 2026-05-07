@@ -76,7 +76,12 @@ export function ProfileEditor({ profile, onChange }: ProfileEditorProps) {
                 className="rounded-md border border-slate-300 bg-white px-2 py-2 text-sm font-normal normal-case text-slate-950"
                 value={attribute.kind}
                 onChange={(event) =>
-                  updateAttribute(profile, attribute.id, { kind: event.target.value as AttributeKind }, onChange)
+                  updateAttribute(
+                    profile,
+                    attribute.id,
+                    { kind: event.target.value as AttributeKind },
+                    onChange,
+                  )
                 }
               >
                 {attributeKinds.map((kind) => (
@@ -91,7 +96,9 @@ export function ProfileEditor({ profile, onChange }: ProfileEditorProps) {
               <input
                 className="rounded-md border border-slate-300 bg-white px-2 py-2 text-sm font-normal normal-case text-slate-950"
                 value={attribute.label}
-                onChange={(event) => updateAttribute(profile, attribute.id, { label: event.target.value }, onChange)}
+                onChange={(event) =>
+                  updateAttribute(profile, attribute.id, { label: event.target.value }, onChange)
+                }
               />
             </label>
             <label className="grid gap-1 text-xs font-semibold uppercase tracking-normal text-slate-500">
@@ -99,7 +106,9 @@ export function ProfileEditor({ profile, onChange }: ProfileEditorProps) {
               <input
                 className="rounded-md border border-slate-300 bg-white px-2 py-2 text-sm font-normal normal-case text-slate-950"
                 value={attribute.value}
-                onChange={(event) => updateAttribute(profile, attribute.id, { value: event.target.value }, onChange)}
+                onChange={(event) =>
+                  updateAttribute(profile, attribute.id, { value: event.target.value }, onChange)
+                }
               />
             </label>
             <button
@@ -121,7 +130,11 @@ export function ProfileEditor({ profile, onChange }: ProfileEditorProps) {
       <button
         className="mt-3 inline-flex items-center gap-2 rounded-md bg-slate-950 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800"
         type="button"
-        onClick={() => updateProfile({ attributes: [...profile.attributes, createAttribute()] })}
+        onClick={() =>
+          updateProfile({
+            attributes: [...profile.attributes, createAttribute()],
+          })
+        }
       >
         <Plus className="size-4" aria-hidden="true" />
         Add attribute

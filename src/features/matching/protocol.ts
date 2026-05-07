@@ -113,7 +113,9 @@ export async function prepareProfileSession(
   profile: LocalProfile,
   sessionId: string,
 ): Promise<PreparedSession> {
-  const records = await Promise.all(profile.attributes.map((attribute) => toMatchRecord(attribute, sessionId)))
+  const records = await Promise.all(
+    profile.attributes.map((attribute) => toMatchRecord(attribute, sessionId)),
+  )
   const bloom = createBloomFilter(DEFAULT_BLOOM_SIZE, DEFAULT_BLOOM_HASHES)
 
   for (const record of records) {

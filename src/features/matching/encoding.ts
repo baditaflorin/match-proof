@@ -44,7 +44,10 @@ export function base64UrlEncode(bytes: Uint8Array): string {
 }
 
 export function base64UrlDecode(input: string): Uint8Array {
-  const padded = input.replaceAll('-', '+').replaceAll('_', '/').padEnd(Math.ceil(input.length / 4) * 4, '=')
+  const padded = input
+    .replaceAll('-', '+')
+    .replaceAll('_', '/')
+    .padEnd(Math.ceil(input.length / 4) * 4, '=')
   const binary = atob(padded)
   const bytes = new Uint8Array(binary.length)
   for (let index = 0; index < binary.length; index += 1) {
