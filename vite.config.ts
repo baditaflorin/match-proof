@@ -48,6 +48,7 @@ export default defineConfig({
         ],
       },
       workbox: {
+        sourcemap: false,
         navigateFallback: '/match-proof/index.html',
         globPatterns: ['**/*.{js,css,html,svg,png,webp,ico}'],
       },
