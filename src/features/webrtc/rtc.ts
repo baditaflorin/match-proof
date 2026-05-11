@@ -1,5 +1,6 @@
 import { decodeJson, encodeJson } from '../matching/encoding'
 import type { WireEnvelope } from '../matching/protocol'
+import { fetchIceServers, STUN_SERVERS } from './turnConfig'
 
 export type PeerStatus =
   | 'idle'
@@ -25,8 +26,13 @@ export class MatchPeer {
   private readonly onMessage: (message: WireMessage) => void
 
   constructor(options: MatchPeerOptions) {
-    this.pc = new RTCPeerConnection({
-      iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
+    // Start STUN-only so the constructor stays synchronous, then upgrade
+    // the ICE-server set to include HMAC TURN credentials as soon as the
+    // token server responds. Future ICE candidate gathering picks up the
+    // relay path — important for peers behind symmetric NAT.
+    this.pc = new RTCPeerConnection({ iceServers: STUN_SERVERS })
+    void fetchIceServers().then((iceServers) => {
+      try { this.pc.setConfiguration({ iceServers }) } catch { /* peer closed */ }
     })
     this.onStatus = options.onStatus
     this.onMessage = options.onMessage
