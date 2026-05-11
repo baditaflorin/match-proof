@@ -13,6 +13,10 @@ import { canonicalToken } from './normalization'
 export const EXCHANGE_VERSION = 'match-proof.exchange.v1'
 export const DEFAULT_BLOOM_SIZE = 2048
 export const DEFAULT_BLOOM_HASHES = 7
+// Cap on how many digests a single proof request can ask for, in case the
+// peer's bloom filter somehow slips past validation and still returns more
+// matches than legitimate profiles would.
+export const MAX_REQUESTED_DIGESTS = 64
 
 export interface MatchRecord {
   attributeId: string
@@ -153,6 +157,7 @@ export function buildProofRequest(prepared: PreparedSession, peerHello: HelloEnv
   const requestedDigests = prepared.records
     .filter((record) => mightContainDigest(peerBloom, record.digest))
     .map((record) => record.digest)
+    .slice(0, MAX_REQUESTED_DIGESTS)
 
   return {
     type: 'proof-request',
